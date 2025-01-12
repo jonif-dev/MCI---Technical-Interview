@@ -20,7 +20,7 @@ class TrainingFlowView extends StatelessWidget {
 
     final TextEditingController weightController = TextEditingController();
     final TextEditingController repsController = TextEditingController();
-
+    Get.delete<TrainingController>();
     return Scaffold(
       appBar: AppBar(title: Text("Training: ${training.name}")),
       body: Obx(() {

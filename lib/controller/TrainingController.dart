@@ -31,6 +31,16 @@ class TrainingController extends GetxController {
     checkForSavedTraining();
   }
 
+  @override
+  void onClose() {
+    // Wenn die Seite geschlossen wird, zurücksetzen des Zustands
+    currentSet.value = 1;
+    currentExerciseIndex.value = 0;
+    isBreak.value = false;
+
+    super.onClose();
+  }
+
   void saveSet(double weight, int reps) {
     currentExercise.performedSets ??= [];
     currentExercise.performedSets?.add({
@@ -62,19 +72,7 @@ class TrainingController extends GetxController {
           currentExerciseIndex.value++;
           currentSet.value = 1;
         } else {
-          Get.dialog(
-            AlertDialog(
-              title: Text("Training abgeschlossen"),
-              content: Text(
-                  "Herzlichen Glückwunsch! Du hast dein Training beendet."),
-              actions: [
-                TextButton(
-                  onPressed: () => Get.back(),
-                  child: Text("OK"),
-                ),
-              ],
-            ),
-          );
+          finishTraining(training);
         }
       }
     });
@@ -90,6 +88,10 @@ class TrainingController extends GetxController {
     Map<String, dynamic> trainingData = {
       "name": training.name,
       "category": training.category,
+      "done": false,
+      "description": training.description,
+      "duration": training.duration,
+      "split": training.split,
       "exercises": List<Map<String, dynamic>>.from(
         training.exercises.map((exercise) {
           return {
@@ -122,6 +124,51 @@ class TrainingController extends GetxController {
     print("Training progress saved to Firestore!");
   }
 
+  void saveCompletedTraining(Training training) async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null) {
+      print('User not logged in');
+      return;
+    }
+
+    final doneTraining = {
+      "name": training.name,
+      "description": training.description,
+      "duration": training.duration,
+      "split": training.split,
+      "done": true,
+      "exercises": training.exercises.map((exercise) {
+        return {
+          "name": exercise.name,
+          "sets": exercise.sets,
+          "reps": exercise.reps,
+          "repUnit": exercise.repUnit,
+          "weight": exercise.weight,
+          "weightUnit": exercise.weightUnit,
+          "break": exercise.breakTime,
+          "muscleGroup": exercise.muscleGroup,
+          "equipment": exercise.equipment,
+          "performedSets": exercise.performedSets ??
+              [], // Gespeicherte Daten für diese Übung
+        };
+      }).toList(),
+      "currentExerciseIndex": currentExerciseIndex.value,
+      "currentSet": currentSet.value,
+    };
+
+    try {
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('trainings')
+          .doc(training.name) // TrainingID könnte z.B. der Trainingsname sein
+          .set(doneTraining);
+      print('Completed training saved successfully');
+    } catch (e) {
+      print('Error saving completed training: $e');
+    }
+  }
+
   // Diese Funktion lädt den gespeicherten Trainingsfortschritt, falls vorhanden
   Future<void> loadTrainingProgress() async {
     DocumentSnapshot snapshot = await _firestore
@@ -142,6 +189,7 @@ class TrainingController extends GetxController {
           return Uebung.fromMap(exerciseData); // Hier wird fromMap aufgerufen
         }),
       );
+
       currentExerciseIndex.value = trainingData["currentExerciseIndex"];
       currentSet.value = trainingData["currentSet"];
 
@@ -195,5 +243,24 @@ class TrainingController extends GetxController {
     } else {
       print("Kein Benutzer angemeldet");
     }
+  }
+
+  void finishTraining(Training t) {
+    saveCompletedTraining(t);
+    Get.dialog(
+      AlertDialog(
+        title: Text("Training abgeschlossen"),
+        content: Text("Herzlichen Glückwunsch! Du hast dein Training beendet."),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back(); // Schließt den Dialog
+              Get.back(); // Geht zum Dashboard zurück
+            },
+            child: Text("OK"),
+          ),
+        ],
+      ),
+    );
   }
 }

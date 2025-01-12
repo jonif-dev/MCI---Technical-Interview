@@ -8,6 +8,10 @@ class Training {
   String split;
   List<Uebung> exercises;
 
+  bool done;
+  int currentExerciseIndex;
+  int currentSet;
+
   Training({
     required this.name,
     required this.description,
@@ -15,6 +19,9 @@ class Training {
     required this.category,
     required this.split,
     required this.exercises,
+    this.done = false,
+    this.currentExerciseIndex = 0,
+    this.currentSet = 0,
   });
 
   factory Training.fromJson(Map<String, dynamic> json) {

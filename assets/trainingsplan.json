@@ -62,5 +62,197 @@
         "equipment": []
       }
     ]
+  },
+  {
+    "name": "Pull-Training",
+    "description": "Ein Trainingsplan für alle ziehenden Bewegungen, fokussiert auf Rücken und Bizeps.",
+    "duration": 45,
+    "category": "Krafttraining",
+    "split": "Pull",
+    "exercises": [
+      {
+        "name": "Klimmzüge",
+        "sets": 4,
+        "reps": 8,
+        "repUnit": "Wdh",
+        "weight": 0,
+        "weightUnit": "kg",
+        "break": 90,
+        "muscleGroup": "Rücken",
+        "equipment": ["Klimmzugstange"]
+      },
+      {
+        "name": "Langhantel-Rudern",
+        "sets": 4,
+        "reps": 10,
+        "repUnit": "Wdh",
+        "weight": 50,
+        "weightUnit": "kg",
+        "break": 90,
+        "muscleGroup": "Rücken",
+        "equipment": ["Langhantel"]
+      },
+      {
+        "name": "KH-Rudern einarmig",
+        "sets": 3,
+        "reps": 12,
+        "repUnit": "Wdh",
+        "weight": 25,
+        "weightUnit": "kg",
+        "break": 60,
+        "muscleGroup": "Rücken",
+        "equipment": ["Kurzhanteln"]
+      },
+      {
+        "name": "Face Pulls",
+        "sets": 3,
+        "reps": 15,
+        "repUnit": "Wdh",
+        "weight": 20,
+        "weightUnit": "kg",
+        "break": 60,
+        "muscleGroup": "Schultern",
+        "equipment": ["Seilzug"]
+      },
+      {
+        "name": "Bizepscurls",
+        "sets": 3,
+        "reps": 12,
+        "repUnit": "Wdh",
+        "weight": 15,
+        "weightUnit": "kg",
+        "break": 60,
+        "muscleGroup": "Bizeps",
+        "equipment": ["Kurzhanteln"]
+      }
+    ]
+  },
+  {
+    "name": "Push-Training",
+    "description": "Ein Trainingsplan für alle drückenden Bewegungen, fokussiert auf Brust, Schultern und Trizeps.",
+    "duration": 50,
+    "category": "Krafttraining",
+    "split": "Push",
+    "exercises": [
+      {
+        "name": "Bankdrücken",
+        "sets": 4,
+        "reps": 8,
+        "repUnit": "Wdh",
+        "weight": 60,
+        "weightUnit": "kg",
+        "break": 90,
+        "muscleGroup": "Brust",
+        "equipment": ["Bank", "Langhantel"]
+      },
+      {
+        "name": "Schrägbank-Kurzhantel-Drücken",
+        "sets": 3,
+        "reps": 12,
+        "repUnit": "Wdh",
+        "weight": 25,
+        "weightUnit": "kg",
+        "break": 60,
+        "muscleGroup": "Brust",
+        "equipment": ["Bank", "Kurzhanteln"]
+      },
+      {
+        "name": "Schulterdrücken",
+        "sets": 4,
+        "reps": 10,
+        "repUnit": "Wdh",
+        "weight": 40,
+        "weightUnit": "kg",
+        "break": 90,
+        "muscleGroup": "Schultern",
+        "equipment": ["Langhantel"]
+      },
+      {
+        "name": "Seitheben",
+        "sets": 3,
+        "reps": 15,
+        "repUnit": "Wdh",
+        "weight": 10,
+        "weightUnit": "kg",
+        "break": 60,
+        "muscleGroup": "Schultern",
+        "equipment": ["Kurzhanteln"]
+      },
+      {
+        "name": "Trizepsdrücken am Kabelzug",
+        "sets": 3,
+        "reps": 12,
+        "repUnit": "Wdh",
+        "weight": 25,
+        "weightUnit": "kg",
+        "break": 60,
+        "muscleGroup": "Trizeps",
+        "equipment": ["Seilzug"]
+      }
+    ]
+  },
+  {
+    "name": "Beine-Training",
+    "description": "Ein intensiver Plan für starke Beine und Gesäßmuskulatur.",
+    "duration": 55,
+    "category": "Krafttraining",
+    "split": "Beine",
+    "exercises": [
+      {
+        "name": "Kniebeugen",
+        "sets": 5,
+        "reps": 8,
+        "repUnit": "Wdh",
+        "weight": 80,
+        "weightUnit": "kg",
+        "break": 120,
+        "muscleGroup": "Beine",
+        "equipment": ["Rack", "Langhantel"]
+      },
+      {
+        "name": "Beinpresse",
+        "sets": 4,
+        "reps": 12,
+        "repUnit": "Wdh",
+        "weight": 150,
+        "weightUnit": "kg",
+        "break": 90,
+        "muscleGroup": "Beine",
+        "equipment": ["Beinpresse"]
+      },
+      {
+        "name": "Ausfallschritte",
+        "sets": 3,
+        "reps": 10,
+        "repUnit": "Wdh pro Bein",
+        "weight": 20,
+        "weightUnit": "kg",
+        "break": 60,
+        "muscleGroup": "Beine",
+        "equipment": ["Kurzhanteln"]
+      },
+      {
+        "name": "Beinbeuger am Gerät",
+        "sets": 3,
+        "reps": 12,
+        "repUnit": "Wdh",
+        "weight": 40,
+        "weightUnit": "kg",
+        "break": 60,
+        "muscleGroup": "Beine",
+        "equipment": ["Beinbeuger"]
+      },
+      {
+        "name": "Wadenheben stehend",
+        "sets": 4,
+        "reps": 15,
+        "repUnit": "Wdh",
+        "weight": 0,
+        "weightUnit": "kg",
+        "break": 60,
+        "muscleGroup": "Waden",
+        "equipment": ["Langhantel"]
+      }
+    ]
   }
 ]
