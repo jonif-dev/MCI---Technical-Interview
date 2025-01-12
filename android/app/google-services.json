@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "345009519586",
+    "project_id": "mci-fitness",
+    "storage_bucket": "mci-fitness.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:345009519586:android:d9fdf94afff7e18a41d7bb",
+        "android_client_info": {
+          "package_name": "com.mci.fitness.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVOqrL110uarorvCW0hr2S4Pk-57CQBq0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
