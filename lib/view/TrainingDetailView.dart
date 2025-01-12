@@ -1,34 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:mci_fitness_app/model/training.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:mci_fitness_app/model/Training.dart';
+import 'package:mci_fitness_app/view/TrainingFlowView.dart';
 
 class TrainingDetailsView extends StatelessWidget {
-  final Training training;
+  final Training currtraining;
 
-  TrainingDetailsView({required this.training});
+  TrainingDetailsView({required this.currtraining});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(training.name)),
+      appBar: AppBar(title: Text(currtraining.name)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              training.description,
+              currtraining.description,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
-            Text('Kategorie: ${training.category}'),
-            Text('Split: ${training.split}'),
-            Text('Dauer: ${training.duration} Minuten'),
+            Text('Kategorie: ${currtraining.category}'),
+            Text('Split: ${currtraining.split}'),
+            Text('Dauer: ${currtraining.duration} Minuten'),
             SizedBox(height: 16),
             Expanded(
               child: ListView.builder(
-                itemCount: training.exercises.length,
+                itemCount: currtraining.exercises.length,
                 itemBuilder: (context, index) {
-                  final exercise = training.exercises[index];
+                  final exercise = currtraining.exercises[index];
                   return Card(
                     margin: EdgeInsets.symmetric(vertical: 8.0),
                     child: ListTile(
@@ -40,6 +43,12 @@ class TrainingDetailsView extends StatelessWidget {
                   );
                 },
               ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Get.to(() => TrainingFlowView(training: currtraining));
+              },
+              child: Text("Training starten"),
             ),
           ],
         ),

@@ -1,12 +1,12 @@
 import 'package:mci_fitness_app/model/Uebung.dart';
 
 class Training {
-  final String name;
-  final String description;
-  final int duration;
-  final String category;
-  final String split;
-  final List<Uebung> exercises;
+  String name;
+  String description;
+  int duration;
+  String category;
+  String split;
+  List<Uebung> exercises;
 
   Training({
     required this.name,

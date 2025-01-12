@@ -8,6 +8,8 @@ class Uebung {
   final int breakTime;
   final String muscleGroup;
   final List<String> equipment;
+  List<Map<String, dynamic>>?
+      performedSets; // Liste für Sätze während des Trainings
 
   Uebung({
     required this.name,
@@ -19,6 +21,7 @@ class Uebung {
     required this.breakTime,
     required this.muscleGroup,
     required this.equipment,
+    this.performedSets,
   });
 
   factory Uebung.fromJson(Map<String, dynamic> json) {
@@ -32,6 +35,25 @@ class Uebung {
       breakTime: json['break'],
       muscleGroup: json['muscleGroup'],
       equipment: List<String>.from(json['equipment']),
+      performedSets: [],
+    );
+  }
+
+  // fromMap Methode
+  factory Uebung.fromMap(Map<String, dynamic> map) {
+    return Uebung(
+      name: map['name'],
+      sets: map['sets'],
+      reps: map['reps'],
+      repUnit: map['repUnit'],
+      weight: map['weight'],
+      weightUnit: map['weightUnit'],
+      breakTime: map['break'],
+      muscleGroup: map['muscleGroup'],
+      equipment: List<String>.from(map['equipment']),
+      performedSets: map['performedSets'] != null
+          ? List<Map<String, dynamic>>.from(map['performedSets'])
+          : [],
     );
   }
 }

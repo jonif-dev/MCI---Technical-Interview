@@ -12,6 +12,7 @@ dependencies:
   get:
   firebase_auth:
   firebase_core:
+  cloud_firestore: ^5.6.1
 
 dev_dependencies:
   flutter_test:

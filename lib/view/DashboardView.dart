@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:mci_fitness_app/controller/AuthController.dart';
 import 'package:mci_fitness_app/controller/TrainingService.dart';
-import 'package:mci_fitness_app/model/training.dart';
+import 'package:mci_fitness_app/model/Training.dart';
 import 'package:mci_fitness_app/view/TrainingDetailView.dart';
 
 class DashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Trainings-Dashboard')),
+      appBar: AppBar(
+        title: Text('Trainings-Dashboard'),
+        actions: [
+          IconButton(
+            onPressed: () => AuthController.instance.logout(),
+            icon: Icon(Icons.logout),
+          ),
+        ],
+      ),
       body: FutureBuilder<List<Training>>(
         future: TrainingService.loadTrainings(),
         builder: (context, snapshot) {
@@ -36,7 +44,7 @@ class DashboardView extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            TrainingDetailsView(training: training),
+                            TrainingDetailsView(currtraining: training),
                       ),
                     );
                   },
