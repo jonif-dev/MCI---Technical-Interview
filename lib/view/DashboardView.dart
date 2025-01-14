@@ -9,6 +9,7 @@ import 'package:mci_fitness_app/view/TrainingFlowView.dart';
 
 class DashboardView extends StatelessWidget {
   final trainingController = Get.put(TrainingsController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +17,10 @@ class DashboardView extends StatelessWidget {
         title: Text('Trainings-Dashboard'),
         actions: [
           IconButton(
-            onPressed: () => AuthController.instance.logout(),
+            onPressed: () {
+              AuthController.instance.logout();
+              Get.delete<TrainingsController>();
+            },
             icon: Icon(Icons.logout),
           ),
         ],

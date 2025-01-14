@@ -22,6 +22,8 @@ class TrainingService {
   static Future<List<Training>> loadTrainings() async {
     final userId = FirebaseAuth.instance.currentUser
         ?.uid; // Holt die User-ID des aktuell angemeldeten Benutzers
+
+    print(userId);
     if (userId == null) {
       print(
           'User not logged in'); // Fehlermeldung, wenn kein Benutzer angemeldet ist
