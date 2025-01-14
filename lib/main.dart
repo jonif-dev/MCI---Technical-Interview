@@ -24,11 +24,39 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/login',
       getPages: [
         GetPage(name: '/login', page: () => LoginView()),
         GetPage(name: '/dashboard', page: () => DashboardView()),
       ],
+      theme: ThemeData(
+        // Setze die globalen Farben im ThemeData
+        scaffoldBackgroundColor:
+            Color(0xFF151515), // Hintergrundfarbe für Scaffold
+
+        appBarTheme: AppBarTheme(
+          backgroundColor: Color(0xFF151515), // AppBar-Hintergrundfarbe
+          titleTextStyle: TextStyle(
+              color: Color(0xFFF3F3F3),
+              fontSize: 20), // Titeltextfarbe der AppBar
+        ),
+      ),
+      home: Obx(() {
+        final authController = Get.find<AuthController>();
+        if (authController.isLoading.value) {
+          // Zeige einen Splash-Screen oder Loading-Indicator
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            ),
+          );
+        } else if (authController.firebaseUser.value == null) {
+          // Nutzer ist nicht angemeldet
+          return LoginView();
+        } else {
+          // Nutzer ist angemeldet
+          return DashboardView();
+        }
+      }),
     );
   }
 }

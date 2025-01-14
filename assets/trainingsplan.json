@@ -192,7 +192,7 @@
     ]
   },
   {
-    "name": "Beine-Training",
+    "name": "Leg-Training",
     "description": "Ein intensiver Plan für starke Beine und Gesäßmuskulatur.",
     "duration": 55,
     "category": "Krafttraining",
@@ -252,6 +252,49 @@
         "break": 60,
         "muscleGroup": "Waden",
         "equipment": ["Langhantel"]
+      }
+    ]
+  },
+
+  {
+    "name": "Dummy-Workout",
+    "description": "Ein einfaches und effizientes Training für den ganzen Körper.",
+    "duration": 20,
+    "category": "Krafttraining",
+    "split": "Ganzkörper",
+    "exercises": [
+      {
+        "name": "Liegestütze",
+        "sets": 2,
+        "reps": 12,
+        "repUnit": "Wdh",
+        "weight": 0,
+        "weightUnit": "kg",
+        "break": 5,
+        "muscleGroup": "Brust",
+        "equipment": []
+      },
+      {
+        "name": "Kniebeugen mit Körpergewicht",
+        "sets": 1,
+        "reps": 15,
+        "repUnit": "Wdh",
+        "weight": 0,
+        "weightUnit": "kg",
+        "break": 5,
+        "muscleGroup": "Beine",
+        "equipment": []
+      },
+      {
+        "name": "Plank",
+        "sets": 2,
+        "reps": 30,
+        "repUnit": "s",
+        "weight": 0,
+        "weightUnit": "kg",
+        "break": 5,
+        "muscleGroup": "Rumpf",
+        "equipment": []
       }
     ]
   }

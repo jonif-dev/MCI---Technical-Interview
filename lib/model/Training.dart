@@ -1,38 +1,31 @@
-import 'package:mci_fitness_app/model/Uebung.dart';
+import 'package:mci_fitness_app/model/Workout.dart';
 
 class Training {
-  String name;
-  String description;
-  int duration;
-  String category;
-  String split;
-  List<Uebung> exercises;
-
+  String? id;
+  Workout workout;
   bool done;
   int currentExerciseIndex;
   int currentSet;
+  DateTime? lastSave;
 
   Training({
-    required this.name,
-    required this.description,
-    required this.duration,
-    required this.category,
-    required this.split,
-    required this.exercises,
+    this.id,
+    required this.workout,
     this.done = false,
     this.currentExerciseIndex = 0,
     this.currentSet = 0,
+    this.lastSave,
   });
 
-  factory Training.fromJson(Map<String, dynamic> json) {
-    return Training(
-      name: json['name'],
-      description: json['description'],
-      duration: json['duration'],
-      category: json['category'],
-      split: json['split'],
-      exercises:
-          (json['exercises'] as List).map((e) => Uebung.fromJson(e)).toList(),
-    );
-  }
+  // factory Training.fromJson(Map<String, dynamic> json) {
+  //   return Training(
+  //     name: json['name'],
+  //     description: json['description'],
+  //     duration: json['duration'],
+  //     category: json['category'],
+  //     split: json['split'],
+  //     exercises:
+  //         (json['exercises'] as List).map((e) => Uebung.fromJson(e)).toList(),
+  //   );
+  // }
 }

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mci_fitness_app/controller/AuthController.dart';
-import 'package:mci_fitness_app/controller/TrainingService.dart';
+import 'package:intl/intl.dart';
+import 'package:mci_fitness_app/controller/TrainingsController.dart';
 import 'package:mci_fitness_app/model/Training.dart';
-import 'package:mci_fitness_app/view/TrainingDetailView.dart';
+
+import 'package:mci_fitness_app/view/WorkoutDetailView.dart';
 import 'package:mci_fitness_app/view/TrainingFlowView.dart';
 
 class DashboardView extends StatelessWidget {
+  final trainingController = Get.put(TrainingsController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,24 +22,10 @@ class DashboardView extends StatelessWidget {
           ),
         ],
       ),
-      body: FutureBuilder<List<List<Training>>>(
-        future: Future.wait([
-          TrainingService.loadTrainings(),
-          TrainingService.loadWorkouts(),
-        ]),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Fehler beim Laden der Daten.'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('Keine Trainings gefunden.'));
-          }
-
-          final completedTrainings = snapshot.data![0];
-          final availableTrainings = snapshot.data![1];
-
-          print(completedTrainings);
+      body: Obx(
+        () {
+          final completedTrainings = trainingController.completedTrainings;
+          final availableWorkouts = trainingController.availableWorkouts;
 
           return Column(
             children: [
@@ -47,8 +37,11 @@ class DashboardView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Recent Trainings',
+                      Center(
+                        child: Text(
+                          'Recent Trainings',
+                          style: TextStyle(color: Colors.white70, fontSize: 25),
+                        ),
                       ),
                       SizedBox(height: 8.0),
                       Expanded(
@@ -59,50 +52,81 @@ class DashboardView extends StatelessWidget {
                             final training = completedTrainings[index];
                             return GestureDetector(
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => TrainingFlowView(
-                                      training: training,
+                                if (!training.done) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => TrainingFlowView(
+                                        training: training,
+                                      ),
                                     ),
-                                  ),
-                                );
+                                  );
+                                }
                               },
                               child: Card(
                                 margin: EdgeInsets.only(right: 8.0),
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: training.done
-                                        ? Colors.white
-                                        : Colors.red
-                                            .shade100, // Farbe basierend auf done-Status
+                                        ? const Color.fromARGB(
+                                            255, 105, 105, 105)
+                                        : const Color.fromARGB(132, 230, 5,
+                                            28), // Farbe basierend auf done-Status
                                     borderRadius: BorderRadius.circular(8.0),
-                                    border: Border.all(
-                                      color: training.done
-                                          ? Colors.grey.shade300
-                                          : Colors.red, // Randfarbe
-                                      width: 1.0,
-                                    ),
                                   ),
-                                  width: 200,
+                                  width: 150,
+                                  height: 100,
                                   padding: EdgeInsets.all(16.0),
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        training.name,
+                                        training.workout.name,
                                         style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 14,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      SizedBox(height: 8),
+                                      Text(
+                                        training.done == false
+                                            ? 'Übung: ${training.workout.exercises[training.currentExerciseIndex].name} '
+                                            : '',
+                                        style: TextStyle(
+                                          fontSize: 12,
+
+                                          color: training.done == false
+                                              ? Colors.black
+                                              : Colors
+                                                  .transparent, // Textfarbe nur anzeigen, wenn done == false
+                                        ),
+                                      ),
+                                      Text(
+                                        training.done == false
+                                            ? 'Satz: ${training.currentSet} '
+                                            : '',
+                                        style: TextStyle(
+                                          fontSize: 12,
+
+                                          color: training.done == false
+                                              ? Colors.black
+                                              : Colors
+                                                  .transparent, // Textfarbe nur anzeigen, wenn done == false
+                                        ),
+                                      ),
+                                      Text(
+                                        '${training.workout.duration} Min',
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 12),
+                                      ),
                                       Spacer(),
                                       Text(
-                                        '${training.duration} Min',
+                                        DateFormat('HH:mm - dd.MM.yyyy')
+                                            .format(training.lastSave!),
                                         style: TextStyle(
-                                            color: Colors.grey, fontSize: 12),
+                                            color: Colors.black54,
+                                            fontSize: 12),
                                       ),
                                     ],
                                   ),
@@ -116,6 +140,7 @@ class DashboardView extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(height: 20.0),
               Divider(),
               // Available Workouts (Bottom Section)
               Expanded(
@@ -125,8 +150,11 @@ class DashboardView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Workouts',
+                      Center(
+                        child: Text(
+                          'Workouts',
+                          style: TextStyle(color: Colors.white70, fontSize: 25),
+                        ),
                       ),
                       SizedBox(height: 8.0),
                       Expanded(
@@ -138,16 +166,17 @@ class DashboardView extends StatelessWidget {
                             crossAxisSpacing: 8.0,
                             mainAxisSpacing: 8.0,
                           ),
-                          itemCount: availableTrainings.length,
+                          itemCount: availableWorkouts.length,
                           itemBuilder: (context, index) {
-                            final training = availableTrainings[index];
+                            final workout = availableWorkouts[index];
+
                             return GestureDetector(
                               onTap: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => TrainingDetailsView(
-                                      currtraining: training,
+                                    builder: (context) => WorkoutDetailsView(
+                                      currworkout: workout,
                                     ),
                                   ),
                                 );
@@ -157,21 +186,21 @@ class DashboardView extends StatelessWidget {
                                   padding: EdgeInsets.all(8.0),
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        training.name,
+                                        workout.name,
                                         style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 20,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Spacer(),
                                       Text(
-                                        '${training.duration} Min',
+                                        '${workout.duration} Min',
                                         style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey,
+                                          fontSize: 16,
+                                          color: Colors.black54,
                                         ),
                                       ),
                                     ],
