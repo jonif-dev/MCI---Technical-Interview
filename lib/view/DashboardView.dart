@@ -126,6 +126,7 @@ class DashboardView extends StatelessWidget {
                                         training.done == true
                                             ? 'Training abgeschlossen! '
                                             : '',
+                                        textAlign: TextAlign.center,
                                         style: TextStyle(
                                             fontSize: 15, color: Colors.yellow),
                                       ),
