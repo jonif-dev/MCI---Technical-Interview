@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mci_fitness_app/controller/AuthController.dart';
 import 'package:intl/intl.dart';
-import 'package:mci_fitness_app/controller/TrainingsController.dart';
-import 'package:mci_fitness_app/model/Training.dart';
 
+import 'package:mci_fitness_app/controller/TrainingsController.dart';
+import 'package:mci_fitness_app/controller/AuthController.dart';
 import 'package:mci_fitness_app/view/WorkoutDetailView.dart';
 import 'package:mci_fitness_app/view/TrainingFlowView.dart';
 
@@ -24,22 +23,21 @@ class DashboardView extends StatelessWidget {
       ),
       body: Obx(
         () {
-          // Überprüfe den Ladezustand
           if (trainingController.isLoading.value) {
             return Center(
               child: CircularProgressIndicator(
-                color: Colors.white, // Farbe passend zu deinem Design
+                color: Colors.white,
               ),
             );
           }
 
-          // Wenn die Daten geladen sind, zeige die Inhalte an
           final completedTrainings = trainingController.completedTrainings;
           final availableWorkouts = trainingController.availableWorkouts;
 
           return Column(
             children: [
-              // Recent Trainings (Top Section)
+              // (Top Section) Übersicht über alle vergangenen Trainingseinheiten, neuste steht zuerst da
+              //Abhängig davon ob  das jeweilige Training abgeschlossen ist oer nicht, wird es unterschiedlich angezeigt
               Expanded(
                 flex: 1,
                 child: Padding(
@@ -62,6 +60,7 @@ class DashboardView extends StatelessWidget {
                             final training = completedTrainings[index];
                             return GestureDetector(
                               onTap: () {
+                                //wenn das Training noch nicht beendet ist kann man es anklicken und das Training weitermachen
                                 if (!training.done) {
                                   Navigator.push(
                                     context,
@@ -80,8 +79,7 @@ class DashboardView extends StatelessWidget {
                                     color: training.done
                                         ? const Color.fromARGB(
                                             255, 105, 105, 105)
-                                        : const Color.fromARGB(132, 230, 5,
-                                            28), // Farbe basierend auf done-Status
+                                        : const Color.fromARGB(132, 230, 5, 28),
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
                                   width: 150,
@@ -104,11 +102,9 @@ class DashboardView extends StatelessWidget {
                                             : '',
                                         style: TextStyle(
                                           fontSize: 12,
-
                                           color: training.done == false
                                               ? Colors.black
-                                              : Colors
-                                                  .transparent, // Textfarbe nur anzeigen, wenn done == false
+                                              : Colors.transparent,
                                         ),
                                       ),
                                       Text(
@@ -117,12 +113,17 @@ class DashboardView extends StatelessWidget {
                                             : '',
                                         style: TextStyle(
                                           fontSize: 12,
-
                                           color: training.done == false
                                               ? Colors.black
-                                              : Colors
-                                                  .transparent, // Textfarbe nur anzeigen, wenn done == false
+                                              : Colors.transparent,
                                         ),
+                                      ),
+                                      Text(
+                                        training.done == true
+                                            ? 'Training abgeschlossen! '
+                                            : '',
+                                        style: TextStyle(
+                                            fontSize: 15, color: Colors.yellow),
                                       ),
                                       Text(
                                         '${training.workout.duration} Min',
@@ -152,7 +153,7 @@ class DashboardView extends StatelessWidget {
               ),
               SizedBox(height: 20.0),
               Divider(),
-              // Available Workouts (Bottom Section)
+              //  (Bottom Section) Alle Möglichen Workouts werden angezeigt und sind anklickbar
               Expanded(
                 flex: 2,
                 child: Padding(
@@ -181,6 +182,8 @@ class DashboardView extends StatelessWidget {
                             final workout = availableWorkouts[index];
 
                             return GestureDetector(
+                              //beim Klicken auf ein Workout wird man auf eine Detail-Seite weitergeleitet,  wo das Workout aufgeschlüsselt steht
+                              //und ein Training begonnen werden kann
                               onTap: () {
                                 Navigator.push(
                                   context,

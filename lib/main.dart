@@ -7,13 +7,17 @@ import 'package:mci_fitness_app/view/LoginView.dart';
 import 'package:mci_fitness_app/view/DashboardView.dart';
 
 void main() async {
+  // Initialisiert Widgets und Firebase
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Registriert den AuthController als Singleton
   Get.put(AuthController());
 
+  // Startet die App
   runApp(const MainApp());
 }
 
@@ -23,40 +27,40 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false, // Entfernt das Debug-Banner
       getPages: [
+        // Definiert die Routen der App
         GetPage(name: '/login', page: () => LoginView()),
         GetPage(name: '/dashboard', page: () => DashboardView()),
       ],
-      theme: ThemeData(
-        // Setze die globalen Farben im ThemeData
-        scaffoldBackgroundColor:
-            Color(0xFF151515), // Hintergrundfarbe für Scaffold
-
-        appBarTheme: AppBarTheme(
-          backgroundColor: Color(0xFF151515), // AppBar-Hintergrundfarbe
-          titleTextStyle: TextStyle(
-              color: Color(0xFFF3F3F3),
-              fontSize: 20), // Titeltextfarbe der AppBar
-        ),
-      ),
       home: Obx(() {
+        // Reagiert auf Änderungen im Authentifizierungsstatus
         final authController = Get.find<AuthController>();
+
         if (authController.isLoading.value) {
-          // Zeige einen Splash-Screen oder Loading-Indicator
-          return Scaffold(
+          // Zeigt einen Ladebildschirm, während der Auth-Status geprüft wird
+          return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(color: Colors.white),
             ),
           );
         } else if (authController.firebaseUser.value == null) {
-          // Nutzer ist nicht angemeldet
+          // Leitet auf die Login-Seite weiter, wenn kein Benutzer angemeldet ist
           return LoginView();
         } else {
-          // Nutzer ist angemeldet
+          // Leitet auf das Dashboard weiter, wenn ein Benutzer angemeldet ist
           return DashboardView();
         }
       }),
+      theme: ThemeData(
+        scaffoldBackgroundColor:
+            const Color(0xFF151515), // Setzt die Hintergrundfarbe
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF151515), // Setzt die Farbe der AppBar
+          titleTextStyle: TextStyle(
+              color: Color(0xFFF3F3F3), fontSize: 20), // Textstil der AppBar
+        ),
+      ),
     );
   }
 }

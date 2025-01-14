@@ -7,23 +7,28 @@ import 'package:mci_fitness_app/model/Uebung.dart';
 import 'package:mci_fitness_app/model/Workout.dart';
 
 class TrainingService {
+  // Lädt Workouts aus einer lokalen JSON-Datei
   static Future<List<Workout>> loadWorkouts() async {
-    final String response =
-        await rootBundle.loadString('assets/trainingsplan.json');
-
-    final List<dynamic> data = json.decode(response);
-
-    return data.map((json) => Workout.fromJson(json)).toList();
+    final String response = await rootBundle
+        .loadString('assets/trainingsplan.json'); // Liest die JSON-Datei
+    final List<dynamic> data =
+        json.decode(response); // Dekodiert die JSON-Daten
+    return data
+        .map((json) => Workout.fromJson(json))
+        .toList(); // Konvertiert zu Workout-Objekten
   }
 
+  // Lädt Trainings eines Benutzers aus Firestore
   static Future<List<Training>> loadTrainings() async {
-    final userId = FirebaseAuth.instance.currentUser?.uid;
+    final userId = FirebaseAuth.instance.currentUser
+        ?.uid; // Holt die User-ID des aktuell angemeldeten Benutzers
     if (userId == null) {
-      print('User not logged in');
+      print(
+          'User not logged in'); // Fehlermeldung, wenn kein Benutzer angemeldet ist
       return [];
     }
-
     try {
+      // Holt die Trainings-Daten des Benutzers aus Firestore
       final snapshot = await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
@@ -33,37 +38,40 @@ class TrainingService {
 
       return snapshot.docs.map((doc) {
         final data = doc.data();
-
         return Training(
-            id: doc.id, // Die automatisch generierte ID aus Firestore
-            done: data['done'],
-            lastSave: data['lastSave'].toDate(),
-            currentExerciseIndex: data['currentExerciseIndex'],
-            currentSet: data['currentSet'],
+            id: doc.id, // Setzt die Trainings-ID
+            done: data['done'], // Status des Trainings
+            lastSave:
+                data['lastSave'].toDate(), // Datum der letzten Speicherung
+            currentExerciseIndex:
+                data['currentExerciseIndex'], // Aktuelle Übung
+            currentSet: data['currentSet'], // Aktueller Satz
             workout: Workout(
-              name: data['workout']['name'],
-              description: data['workout']['description'],
-              split: data['workout']['split'],
-              category: data['workout']['category'],
-              duration: data['workout']['duration'],
+              name: data['workout']['name'], // Name des Workouts
+              description: data['workout']['description'], // Beschreibung
+              split: data['workout']['split'], // Split (z. B. Push, Pull)
+              category: data['workout']['category'], // Kategorie
+              duration: data['workout']['duration'], // Dauer des Workouts
               exercises: (data['workout']['exercises'] as List).map((exercise) {
                 return Uebung(
-                  name: exercise['name'],
-                  sets: exercise['sets'],
-                  reps: exercise['reps'],
-                  repUnit: exercise['repUnit'],
-                  weight: exercise['weight'],
-                  weightUnit: exercise['weightUnit'],
-                  breakTime: exercise['break'],
-                  muscleGroup: exercise['muscleGroup'],
-                  equipment: List<String>.from(exercise['equipment'] ?? []),
+                  name: exercise['name'], // Name der Übung
+                  sets: exercise['sets'], // Anzahl der Sätze
+                  reps: exercise['reps'], // Wiederholungen
+                  repUnit: exercise['repUnit'], // Einheit der Wiederholungen
+                  weight: exercise['weight'], // Gewicht
+                  weightUnit: exercise['weightUnit'], // Gewichtseinheit
+                  breakTime: exercise['break'], // Pausenzeit
+                  muscleGroup: exercise['muscleGroup'], // Muskelgruppe
+                  equipment: List<String>.from(
+                      exercise['equipment'] ?? []), // Ausrüstung
                   performedSets: List<Map<String, dynamic>>.from(
-                      exercise['performedSets'] ?? []),
+                      exercise['performedSets'] ?? []), // Durchgeführte Sätze
                 );
               }).toList(),
             ));
       }).toList();
     } catch (e) {
+      // Fehlerbehandlung bei Firestore-Zugriff
       print('Fehler beim Laden der Trainings: $e');
       throw Exception('Fehler beim Laden der Trainings');
     }

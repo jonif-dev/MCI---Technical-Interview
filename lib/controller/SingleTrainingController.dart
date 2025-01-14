@@ -10,26 +10,28 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SingleTrainingController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  Training training;
-  var currentExerciseIndex = 0.obs;
-  var currentSet = 1.obs;
-  var isBreak = false.obs;
-  var timerDuration = 0.obs;
-  var lastE1RM = 0.0.obs;
+  Training training; // Aktuelles Training
   Uebung get currentExercise =>
       training.workout.exercises[currentExerciseIndex.value];
-  final String? userId = FirebaseAuth.instance.currentUser?.uid;
+
+  final String? userId = FirebaseAuth.instance.currentUser?.uid; // Benutzer-ID
+  var currentExerciseIndex = 0.obs; // Aktuelle Übung
+  var currentSet = 1.obs; // Aktueller Satz
+  var isBreak = false.obs; // Status der Pause
+  var timerDuration = 0.obs; // Dauer der Pause
+  var lastE1RM = 0.0.obs; // Letzter berechneter e1RM-Wert
 
   SingleTrainingController(this.training);
 
   @override
   void onReady() {
     super.onReady();
-    checkForSavedTraining();
+    checkForSavedTraining(); // Überprüfen, ob ein gespeichertes Training vorhanden ist
   }
 
   @override
   void onClose() {
+    // Zurücksetzen der Trainingsdaten beim Schließen
     currentSet.value = 1;
     currentExerciseIndex.value = 0;
     isBreak.value = false;
@@ -37,6 +39,7 @@ class SingleTrainingController extends GetxController {
   }
 
   void saveSet(double weight, int reps) {
+    // Speichert einen Satz und berechnet den e1RM
     currentExercise.performedSets ??= [];
     currentExercise.performedSets?.add({
       "set": currentSet.value,
@@ -44,47 +47,47 @@ class SingleTrainingController extends GetxController {
       "reps": reps,
     });
 
-    // e1RM für den letzten Satz berechnen
-    lastE1RM.value = calculateE1RM(weight, reps);
+    lastE1RM.value = calculateE1RM(weight, reps); // e1RM berechnen
 
-    startBreak();
+    startBreak(); // Pause starten
   }
 
   void startBreak() {
     isBreak.value = true;
-    timerDuration.value = currentExercise.breakTime;
+    timerDuration.value =
+        currentExercise.breakTime; // Pause basierend auf Übungszeit
 
     Timer.periodic(Duration(seconds: 1), (timer) {
       if (timerDuration.value > 1) {
         timerDuration.value -= 1; // Countdown aktualisieren
       } else {
-        timer.cancel(); // Timer stoppen, wenn Zeit abgelaufen ist
+        timer.cancel(); // Timer stoppen
         isBreak.value = false;
 
         if (currentSet.value < currentExercise.sets) {
-          currentSet.value++;
+          currentSet.value++; // Nächster Satz
         } else if (currentExerciseIndex.value <
             training.workout.exercises.length - 1) {
-          currentExerciseIndex.value++;
+          currentExerciseIndex.value++; // Nächste Übung
           currentSet.value = 1;
         } else {
-          finishTraining(training);
+          finishTraining(training); // Training abschließen
         }
       }
     });
   }
 
   double calculateE1RM(double weight, int reps) {
+    // Berechnet den e1RM-Wert basierend auf Gewicht und Wiederholungen
     if (reps == 0) return 0; // Verhindert Division durch 0
     return weight / (0.522 + 0.419 * exp(-0.055 * reps));
   }
 
-  // Diese Funktion speichert das aktuelle Training in Firestore
-
   Future<void> saveTraining(Training training, bool done) async {
+    // Speichert das aktuelle Training in Firestore
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId == null) {
-      print('User not logged in');
+      print('User not logged in'); // Fehlerausgabe bei fehlender Anmeldung
       return;
     }
 
@@ -111,7 +114,7 @@ class SingleTrainingController extends GetxController {
         }).toList(),
       },
       "done": done,
-      "lastSave": DateTime.now(),
+      "lastSave": DateTime.now(), // Zeitstempel der Speicherung
       "currentExerciseIndex": currentExerciseIndex.value,
       "currentSet": currentSet.value,
     };
@@ -121,31 +124,31 @@ class SingleTrainingController extends GetxController {
           .collection('users')
           .doc(userId)
           .collection('trainings')
-          .add(doneTraining);
+          .add(doneTraining); // Training hinzufügen
       print('Completed training saved successfully');
     } catch (e) {
-      print('Error saving completed training: $e');
+      print('Error saving completed training: $e'); // Fehlerausgabe
     }
-    Get.find<TrainingsController>().loadTrainings();
+    Get.find<TrainingsController>()
+        .loadTrainings(); // Trainingsliste aktualisieren
   }
 
-  // Diese Funktion lädt den gespeicherten Trainingsfortschritt, falls vorhanden
   Future<void> loadTrainingProgress(QuerySnapshot snapshot) async {
+    // Lädt gespeicherten Trainingsfortschritt
     var trainingData = snapshot.docs.first.data() as Map<String, dynamic>;
 
-    // Setzt die gespeicherten Werte aus Firestore
     training.workout.name = trainingData['workout']["name"];
     training.workout.category = trainingData['workout']["category"];
     training.workout.exercises = List<Uebung>.from(
       trainingData['workout']["exercises"].map((exerciseData) {
-        return Uebung.fromMap(exerciseData); // Hier wird fromMap aufgerufen
+        return Uebung.fromMap(exerciseData); // Erstellt Übung aus Map
       }),
     );
 
     currentExerciseIndex.value = trainingData["currentExerciseIndex"];
     currentSet.value = trainingData["currentSet"];
 
-    // Lade den Fortschritt der Übungen
+    // Fortschritt der Übungen laden
     for (var exercise in training.workout.exercises) {
       var exerciseData = trainingData['workout']["exercises"].firstWhere(
         (ex) => ex["name"] == exercise.name,
@@ -156,6 +159,7 @@ class SingleTrainingController extends GetxController {
   }
 
   Future<void> checkForSavedTraining() async {
+    // Überprüft, ob ein gespeichertes Training vorhanden ist
     if (userId != null) {
       QuerySnapshot snapshot = await _firestore
           .collection('users')
@@ -190,11 +194,13 @@ class SingleTrainingController extends GetxController {
         );
       }
     } else {
-      print("Kein Benutzer angemeldet");
+      print(
+          "Kein Benutzer angemeldet"); // Fehlerausgabe bei fehlender Anmeldung
     }
   }
 
   void finishTraining(Training t) {
+    // Schließt das Training ab und speichert es
     saveTraining(t, true);
     Get.dialog(
       AlertDialog(

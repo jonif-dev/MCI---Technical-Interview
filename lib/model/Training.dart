@@ -1,13 +1,15 @@
 import 'package:mci_fitness_app/model/Workout.dart';
 
+// Diese Klasse repräsentiert ein Training
 class Training {
-  String? id;
-  Workout workout;
-  bool done;
-  int currentExerciseIndex;
-  int currentSet;
-  DateTime? lastSave;
+  String? id; // Eindeutige ID für das Training
+  Workout workout; // Zugehöriges Workout
+  bool done; // Gibt an, ob das Training abgeschlossen wurde
+  int currentExerciseIndex; // Index der aktuellen Übung im Workout
+  int currentSet; // Aktueller Satz der aktuellen Übung
+  DateTime? lastSave; // Letzter Zeitpunkt der Speicherung
 
+  // Konstruktor für die Training-Klasse
   Training({
     this.id,
     required this.workout,
@@ -16,16 +18,4 @@ class Training {
     this.currentSet = 0,
     this.lastSave,
   });
-
-  // factory Training.fromJson(Map<String, dynamic> json) {
-  //   return Training(
-  //     name: json['name'],
-  //     description: json['description'],
-  //     duration: json['duration'],
-  //     category: json['category'],
-  //     split: json['split'],
-  //     exercises:
-  //         (json['exercises'] as List).map((e) => Uebung.fromJson(e)).toList(),
-  //   );
-  // }
 }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+
 import 'package:mci_fitness_app/model/Training.dart';
 import 'package:mci_fitness_app/model/Workout.dart';
 import 'package:mci_fitness_app/view/TrainingFlowView.dart';
 
+//WorkoutDetail zeigt eine Workout im detail an, dabei ist eine Beschreibung zu sehen sowie  alle Übungen mit  Gewichtszahl, Wiederholungen und Sets
 class WorkoutDetailsView extends StatelessWidget {
   final Workout currworkout;
 
@@ -20,7 +21,7 @@ class WorkoutDetailsView extends StatelessWidget {
               color: Colors.white,
             ),
             onPressed: () {
-              Get.back(); // Mit GetX zurück navigieren
+              Get.back();
             },
           ),
           title: Text(currworkout.name)),
@@ -70,18 +71,14 @@ class WorkoutDetailsView extends StatelessWidget {
                 Icons.play_arrow,
                 size: 30,
                 color: Colors.white54,
-              ), // Play-Icon
+              ),
               label: Text("Training starten",
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white54)), // Text auf dem Button
+                  style: TextStyle(fontSize: 16, color: Colors.white54)),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(
-                    255, 63, 63, 63), // Button Hintergrundfarbe
-                minimumSize: Size(double.infinity,
-                    50), // Breite des Buttons (füllt die Breite des Bildschirms)
+                backgroundColor: const Color.fromARGB(255, 63, 63, 63),
+                minimumSize: Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12), // Abgerundete Ecken
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
             ),

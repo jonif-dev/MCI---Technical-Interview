@@ -3,11 +3,14 @@ import 'package:get/get.dart';
 import 'package:mci_fitness_app/controller/SingleTrainingController.dart';
 import 'package:mci_fitness_app/model/Training.dart';
 
+//TrainingsFlow ist die Ansichtt die angezeigt  wird wenn ein  Training gestartet wird
+//Dabei wird zwischen Übung und Pause gewechselt bis das Training abgeschlossen ist
 class TrainingFlowView extends StatelessWidget {
   final Training training;
 
   TrainingFlowView({required this.training});
 
+  //Formatiert die Timer auf mm:ss
   String formatDuration(int seconds) {
     final minutes = seconds ~/ 60;
     final remainingSeconds = seconds % 60;
@@ -31,6 +34,7 @@ class TrainingFlowView extends StatelessWidget {
               color: Colors.white,
             ),
             onPressed: () {
+              //Bestätigungsfeld, das angezeigt wird, wenn man das Training ohne Speichern verlassen möchte
               showDialog<bool>(
                 context: Get.context!,
                 builder: (BuildContext context) {
@@ -41,14 +45,14 @@ class TrainingFlowView extends StatelessWidget {
                     actions: <Widget>[
                       TextButton(
                         onPressed: () {
-                          Get.back(); // Der Benutzer möchte nicht zurückgehen
+                          Get.back();
                         },
                         child: Text('Abbrechen'),
                       ),
                       TextButton(
                         onPressed: () {
-                          Get.back(); // Der Benutzer möchte zurückgehen
-                          Get.back(); // Der Benutzer möchte zurückgehen
+                          Get.back();
+                          Get.back();
                         },
                         child: Text('Ja'),
                       ),
@@ -56,11 +60,11 @@ class TrainingFlowView extends StatelessWidget {
                   );
                 },
               );
-              // Mit GetX zurück navigieren
             },
           ),
           title: Text("Training: ${training.workout.name}")),
       body: Obx(() {
+        //Ansicht der Pause mit Timer und Infofeld für E1RM
         if (controller.isBreak.value) {
           return Center(
             child: Column(
@@ -92,7 +96,7 @@ class TrainingFlowView extends StatelessWidget {
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.3),
                         blurRadius: 5,
-                        offset: Offset(0, 3), // Schattenposition
+                        offset: Offset(0, 3),
                       ),
                     ],
                   ),
@@ -101,19 +105,17 @@ class TrainingFlowView extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.info_outline,
-                        color: Colors
-                            .black, // Du kannst die Farbe des Icons ändern
+                        color: Colors.black,
                         size: 24,
                       ),
-                      SizedBox(width: 35), // Abstand zwischen Icon und Text
+                      SizedBox(width: 35),
                       Expanded(
                         child: Text(
                           "Dein E1RM: ${controller.lastE1RM.value.toStringAsFixed(2)} kg",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Colors
-                                .black, // Du kannst die Textfarbe hier ändern
+                            color: Colors.black,
                           ),
                         ),
                       ),
@@ -126,7 +128,7 @@ class TrainingFlowView extends StatelessWidget {
         }
 
         final currentExercise = controller.currentExercise;
-
+        //Ansicht einer Übung mit Eingabefelder für Gewicht und Wiederholungen, zudem einem Button zum Speichern und Pausieren
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -176,29 +178,26 @@ class TrainingFlowView extends StatelessWidget {
                 controller: weightController,
                 decoration: InputDecoration(
                   labelText: "Gewicht (${currentExercise.weightUnit})",
-                  labelStyle: TextStyle(color: Colors.white), // Label in Weiß
+                  labelStyle: TextStyle(color: Colors.white),
                   border: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: Colors.white, // Weiße Umrandung
-                      width: 2.0, // Optional: Dicke der Umrandung
+                      color: Colors.white,
+                      width: 2.0,
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: Colors
-                          .white54, // Weiße Umrandung bei aktiviertem Zustand
+                      color: Colors.white54,
                       width: 2.0,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: Colors.white54, // Weiße Umrandung bei Fokussierung
+                      color: Colors.white54,
                       width: 2.0,
                     ),
                   ),
-                  hintStyle: TextStyle(
-                      color:
-                          Colors.white54), // Hint-Text in Weiß mit Transparenz
+                  hintStyle: TextStyle(color: Colors.white54),
                 ),
                 keyboardType: TextInputType.number,
               ),
@@ -208,23 +207,20 @@ class TrainingFlowView extends StatelessWidget {
                 controller: repsController,
                 decoration: InputDecoration(
                   labelText: "Wiederholungen (${currentExercise.repUnit})",
-                  labelStyle: TextStyle(color: Colors.white), // Label in Weiß
+                  labelStyle: TextStyle(color: Colors.white),
                   border: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: Colors.white54, // Weiße Umrandung
-                      width: 2.0, // Optional: Dicke der Umrandung
-                    ),
-                  ),
-
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.white54, // Weiße Umrandung bei Fokussierung
+                      color: Colors.white54,
                       width: 2.0,
                     ),
                   ),
-                  hintStyle: TextStyle(
-                      color:
-                          Colors.white54), // Hint-Text in Weiß mit Transparenz
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.white54,
+                      width: 2.0,
+                    ),
+                  ),
+                  hintStyle: TextStyle(color: Colors.white54),
                 ),
                 keyboardType: TextInputType.number,
               ),
@@ -245,19 +241,14 @@ class TrainingFlowView extends StatelessWidget {
                   Icons.pause,
                   size: 30,
                   color: Colors.white54,
-                ), // Play-Icon
+                ),
                 label: Text("Satz beenden",
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white54)), // Text auf dem Button
+                    style: TextStyle(fontSize: 16, color: Colors.white54)),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(
-                      255, 63, 63, 63), // Button Hintergrundfarbe
-                  minimumSize: Size(double.infinity,
-                      50), // Breite des Buttons (füllt die Breite des Bildschirms)
+                  backgroundColor: const Color.fromARGB(255, 63, 63, 63),
+                  minimumSize: Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(12), // Abgerundete Ecken
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
