@@ -24,6 +24,16 @@ class DashboardView extends StatelessWidget {
       ),
       body: Obx(
         () {
+          // Überprüfe den Ladezustand
+          if (trainingController.isLoading.value) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: Colors.white, // Farbe passend zu deinem Design
+              ),
+            );
+          }
+
+          // Wenn die Daten geladen sind, zeige die Inhalte an
           final completedTrainings = trainingController.completedTrainings;
           final availableWorkouts = trainingController.availableWorkouts;
 

@@ -7,6 +7,7 @@ import 'package:mci_fitness_app/model/Workout.dart';
 class TrainingsController extends GetxController {
   var completedTrainings = <Training>[].obs;
   var availableWorkouts = <Workout>[].obs;
+  var isLoading = true.obs; // Observable für den Ladezustand
 
   @override
   void onReady() {
@@ -15,10 +16,17 @@ class TrainingsController extends GetxController {
   }
 
   void loadTrainings() async {
-    final completed = await TrainingService.loadTrainings();
-    final available = await TrainingService.loadWorkouts();
+    try {
+      isLoading.value = true;
+      // Lade hier deine Daten (z.B. von Firestore oder einer API)
 
-    completedTrainings.value = completed;
-    availableWorkouts.value = available;
+      final completed = await TrainingService.loadTrainings();
+      final available = await TrainingService.loadWorkouts();
+
+      completedTrainings.value = completed;
+      availableWorkouts.value = available;
+    } finally {
+      isLoading.value = false;
+    }
   }
 }
